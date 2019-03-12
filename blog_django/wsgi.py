@@ -11,6 +11,8 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "blog_django.settings")
+# 调整这了,将setting配置文件分开加载
+profile = os.environ.get('PROJECT_PROFILE', 'develop')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", f"blog_django.settings.{profile}")
 
 application = get_wsgi_application()
