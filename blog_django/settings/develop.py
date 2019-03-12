@@ -9,6 +9,7 @@ from .base import *  # NOQA
 
 # dbug
 DEBUG = True
+BASE_DIR = os.path.join(BASE_DIR, '../')
 
 # 数据库配置
 DATABASES = {
