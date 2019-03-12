@@ -3,7 +3,9 @@ import os
 import sys
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "blog_django.settings")
+    # 调整这了,将setting配置文件分开加载
+    profile = os.environ.get('PROJECT_PROFILE', 'develop')
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", f"blog_django.settings.{profile}")
     try:
         from django.core.management import execute_from_command_line
     except ImportError:
