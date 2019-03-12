@@ -20,6 +20,9 @@ class Category(models.Model):
     created_time = models.DateTimeField(auto_now_add=True, db_index=True, db_column='ccreated_time',
                                         verbose_name='创建时间')
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = 'blog_categories'
         verbose_name = '分类'
@@ -40,6 +43,9 @@ class Tag(models.Model):
     owner = models.ForeignKey(User, db_column='towner', verbose_name='作者')
     created_time = models.DateTimeField(auto_now_add=True, db_index=True, db_column='tcreated_time',
                                         verbose_name='创建时间')
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = 'blog_tags'
@@ -67,6 +73,9 @@ class Post(models.Model):
     tag = models.ManyToManyField(Tag, verbose_name='标签')
     owner = models.ForeignKey(User, verbose_name='作者')
     created_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间', db_index=True)
+
+    def __str__(self):
+        return self.title
 
     class Meta:
         db_table = 'blog_posts'
