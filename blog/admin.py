@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from blog.models import Tag, Category, Post
 from blog.forms.adminforms import PostAdminForm
+from blog_django.base_admin import BaseOwnerAdmin
 
 
 # Register your models here.
@@ -16,7 +17,7 @@ class PostInline(admin.TabularInline):  # admin.StackedInline 只是样式不同
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(BaseOwnerAdmin):
     inlines = (PostInline,)
     list_display = ('name', 'status', 'is_nav', 'post_count', 'created_time')
     fields = ('name', 'status', 'is_nav')
@@ -27,20 +28,11 @@ class CategoryAdmin(admin.ModelAdmin):
 
     post_count.short_description = '文章数量'
 
-    # 在使用django的admin保存数据的时候触发的方法
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user  # 将当前登陆用户创建为作者
-        return super(CategoryAdmin, self).save_model(request, obj, form, change)
-
 
 @admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
+class TagAdmin(BaseOwnerAdmin):
     list_display = ('name', 'status', 'created_time')
     fields = ('name', 'status')
-
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user  # 将当前登陆用户创建为作者
-        return super(TagAdmin, self).save_model(request, obj, form, change)
 
 
 class CategoryOwnerFilter(admin.SimpleListFilter):
@@ -63,7 +55,7 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
 
 
 @admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(BaseOwnerAdmin):
     form = PostAdminForm
     list_display = [
         'title', 'category', 'status',
@@ -72,7 +64,7 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = [CategoryOwnerFilter]
     search_fields = ['title', 'category__name']
     actions_on_top = True
-    actions_on_bottom = True
+    # actions_on_bottom = True
 
     # 编辑页面
     # save_on_top = True # 保存 编辑按钮是否在顶部显式
@@ -128,15 +120,6 @@ class PostAdmin(admin.ModelAdmin):
 
     operator.short_description = '操作'
 
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user
-        return super(PostAdmin, self).save_model(request, obj, form, change)
-
-    def get_queryset(self, request):
-        """定义列表页只能获取自己的文章"""
-        qs = super(PostAdmin, self).get_queryset(request)
-        return qs.filter(owner=request.user)
-
     class Media:
         """在Media信息中可以自定义静态资源的引入"""
         css = {
@@ -144,4 +127,4 @@ class PostAdmin(admin.ModelAdmin):
             # 'all': ('https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css',)
         }
         # 导入js
-        js = ('https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js',)
+        # js = ('https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js',)
