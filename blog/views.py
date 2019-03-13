@@ -2,23 +2,28 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from blog.models import Tag, Post, Category
+from config.models import SideBar
 
 
 # Create your views here.
 
 def post_list(request, category_id=None, tag_id=None):
+    tag = None
+    category = None
     if tag_id:
-        try:
-            tag = Tag.objects.get(id=tag_id)
-        except Tag.DoesNotExist:
-            posts = []
-        else:
-            posts = tag.post_set.filter(status=Post.STATUS_NORMAL)
+        post, tag = Post.get_by_tag(tag_id)
+    elif category_id:
+        post, category = Post.get_by_category(category_id)
     else:
-        posts = Post.objects.filter(status=Post.STATUS_NORMAL)
-        if category_id:
-            posts = posts.filter(category_id=category_id)
-    return render(request, 'blog/list.html', context={'posts': posts})
+        post = Post.latest_posts()
+    ctx = {
+        'category': category,
+        'tag': tag,
+        'post': post,
+        'sidebars': SideBar.get_all()
+    }
+    ctx.update(Category.get_navs())
+    return render(request, 'blog/list.html', ctx)
 
 
 def post_detail(request, post_id):
@@ -26,5 +31,6 @@ def post_detail(request, post_id):
         posts = Post.objects.get(id=post_id)
     except Post.DoesNotExist:
         posts = None
-    ctx = {'posts': posts}
+    ctx = {'post': posts, 'sidebars': SideBar.get_all()}
+    ctx.update(Category.get_navs())
     return render(request, 'blog/detail.html', ctx)

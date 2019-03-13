@@ -45,6 +45,10 @@ class SideBar(models.Model):
     owner = models.ForeignKey(User, verbose_name='作者')
     created_time = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='创建时间')
 
+    @classmethod
+    def get_all(cls):
+        return cls.objects.filter(status=cls.STATUS_SHOW)
+
     class Meta:
         db_table = 'config_sidebars'
         verbose_name = '侧边栏'

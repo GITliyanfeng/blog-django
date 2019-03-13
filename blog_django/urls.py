@@ -21,8 +21,8 @@ from config.views import links
 
 urlpatterns = [
     url(r'^$', post_list),
-    url(r'^category/(?P<category_id>\d+)/$', post_list),
-    url(r'^tag/(?P<tag_id>\d+)/$', post_list),
+    url(r'^category/(?P<category_id>\d+)/$', post_list, name='postListcate'),
+    url(r'^tag/(?P<tag_id>\d+)/$', post_list, name='postListtag'),
     url(r'^post/(?P<post_id>\d+).html$', post_detail, name='postDetail'),
     url(r'^admin/', admin.site.urls),
     url(r'^links/$', links),
