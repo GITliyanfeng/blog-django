@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
+from django.contrib.admin.models import LogEntry
 
 from blog.models import Tag, Category, Post
 from blog.forms.adminforms import PostAdminForm
@@ -128,3 +129,9 @@ class PostAdmin(BaseOwnerAdmin):
         }
         # 导入js
         # js = ('https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js',)
+
+
+@admin.register(LogEntry)
+class LogEntryAdmin(admin.ModelAdmin):
+    list_display = ['object_repr', 'object_id', 'action_flag', 'user', 'change_message']
+    list_filter = ['user']
