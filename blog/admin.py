@@ -8,8 +8,16 @@ from blog.forms.adminforms import PostAdminForm
 
 # Register your models here.
 
+class PostInline(admin.TabularInline):  # admin.StackedInline 只是样式不同
+    """内联数据管理---分类下面直接管理相对应的文章"""
+    fields = ('title', 'desc')
+    extra = 0  # 控制额外多出几个
+    model = Post
+
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    inlines = (PostInline,)
     list_display = ('name', 'status', 'is_nav', 'post_count', 'created_time')
     fields = ('name', 'status', 'is_nav')
 
