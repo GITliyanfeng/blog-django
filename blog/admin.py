@@ -1,12 +1,17 @@
+import requests
+
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
+from django.contrib.auth import get_permission_codename
 
 from blog.models import Tag, Category, Post
 from blog.forms.adminforms import PostAdminForm
 
-
 # Register your models here.
+
+PERMISSION_API = 'http://permission.sso.com/has_perm?user={}&perm_code{}'
+
 
 class PostInline(admin.TabularInline):  # admin.StackedInline 只是样式不同
     """内联数据管理---分类下面直接管理相对应的文章"""
@@ -64,6 +69,19 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
+
+    def has_add_permission(self, request):
+        opts = self.opts
+        print(opts)
+        codname = get_permission_codename('add', opts)
+        perm_code = "%s.%s" % (opts.app_label, codname)
+        print(perm_code)
+        resp = requests.get(PERMISSION_API.format(request.user.username, perm_code))
+        if resp.status_code == 200:
+            return True
+        else:
+            return False
+
     form = PostAdminForm
     list_display = [
         'title', 'category', 'status',
@@ -72,7 +90,7 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = [CategoryOwnerFilter]
     search_fields = ['title', 'category__name']
     actions_on_top = True
-    actions_on_bottom = True
+    # actions_on_bottom = True
 
     # 编辑页面
     # save_on_top = True # 保存 编辑按钮是否在顶部显式
@@ -144,4 +162,4 @@ class PostAdmin(admin.ModelAdmin):
             # 'all': ('https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css',)
         }
         # 导入js
-        js = ('https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js',)
+        # js = ('https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js',)
