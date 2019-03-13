@@ -4,6 +4,8 @@ from django.urls import reverse
 
 from blog.models import Tag, Category, Post
 from blog.forms.adminforms import PostAdminForm
+from blog_django.custom_site import custom_site
+# 自定义site对其他文件的影响 表现在:1 反向解析的命名空间   2 url配置
 
 
 # Register your models here.
@@ -62,7 +64,7 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
         return queryset
 
 
-@admin.register(Post)
+@admin.register(Post, site=custom_site)
 class PostAdmin(admin.ModelAdmin):
     form = PostAdminForm
     list_display = [
@@ -123,7 +125,9 @@ class PostAdmin(admin.ModelAdmin):
 
     def operator(self, obj):
         return format_html(
-            '<a href="{}">编辑</a>', reverse('admin:blog_post_change', args=(obj.id,))
+            # 这里注意,反向解析和site有关,更换site后也要修改命名空间
+            # '<a href="{}">编辑</a>', reverse('admin:blog_post_change', args=(obj.id,))
+            '<a href="{}">编辑</a>', reverse('cus_admin:blog_post_change', args=(obj.id,))
         )
 
     operator.short_description = '操作'
