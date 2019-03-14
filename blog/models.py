@@ -80,6 +80,9 @@ class Post(models.Model):
         (STATUS_DELETE, '删除'),
         (STATUS_DRAFT, '草稿'),
     )
+    # pv和uv来分别统计每篇文章的访问量
+    pv = models.PositiveIntegerField(default=1)
+    uv = models.PositiveIntegerField(default=1)
     title = models.CharField(max_length=255, verbose_name='标题')
     desc = models.CharField(max_length=1024, blank=True, verbose_name='摘要')
     content = models.TextField(verbose_name='正文', help_text="正文必须为MarkDown格式")
@@ -121,6 +124,11 @@ class Post(models.Model):
     def latest_posts(cls):
         queryset = cls.objects.filter(status=cls.STATUS_NORMAL)
         return queryset
+
+    @classmethod
+    def hot_posts(cls):
+        """获取高点击连量的文章"""
+        return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
 
     class Meta:
         db_table = 'blog_posts'
