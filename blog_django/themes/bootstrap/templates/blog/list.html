@@ -1,0 +1,36 @@
+{% extends 'blog/base.html' %}
+{% block title %}
+    {% if tag %}
+        标签页:{{ tag.name }}
+    {% endif %}
+    {% if category %}
+        分类页:{{ category.name }}
+    {% endif %}
+{% endblock %}
+{% block main %}
+    {% for item in post %}
+        <div class="card post">
+            <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'postDetail' item.id %}">{{ item.title }}</a></h5>
+                <span class="card-link">作者:<a href="#">{{ item.owner.username }}</a></span>
+                <span class="card-link">分类:<a href="#">{{ item.category.name }}</a></span>
+                <span class="card-link">标签:
+                    {% for tag in item.tag.all %}
+                        <a href="{% url 'postListtag' tag.id %}">{{ tag.name }}</a>
+                    {% endfor %}
+                    </span>
+                <p class="card-text">{{ item.desc }}
+                    <a href="{% url 'postDetail' item.id %}">完整内容</a></p>
+            </div>
+        </div>
+    {% endfor %}
+    {% if page_obj %}
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">上一页</a>
+        {% endif %}
+        当前页码：{{ page_obj.number }} 总页码：{{ paginator.num_pages }}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">下一页</a>
+        {% endif %}
+    {% endif %}
+{% endblock %}
