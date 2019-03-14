@@ -1,5 +1,5 @@
 <ul class="list-group">
     {% for comment in comments %}
-        <li class="list-group-item"><a class="nav-link" href="{{ comment.target }}">{{ comment.target.title }}</a>| {{ comment.nickname }} : {{ comment.content }}</li>
+        <li class="list-group-item"><a class="nav-link" href="{{ comment.target }}">{{ comment.target.title }}</a>| {{ comment.nickname }} : {{ comment.content | safe }}</li>
     {% endfor %}
 </ul>

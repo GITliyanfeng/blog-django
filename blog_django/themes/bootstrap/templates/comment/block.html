@@ -15,7 +15,7 @@
                     <span>{{ comment.created_time }}</span>
                 </div>
                 <div class="comment-content">
-                    {{ comment.content }}
+                    {{ comment.content | safe }}
                 </div>
             </li>
         {% endfor %}

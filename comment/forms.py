@@ -6,6 +6,7 @@
 # @Software: PyCharm
 from django import forms
 from comment.models import Comment
+import mistune
 
 
 class CommentForm(forms.ModelForm):
@@ -45,6 +46,7 @@ class CommentForm(forms.ModelForm):
         content = self.cleaned_data.get('content')
         if len(content) < 10:
             raise forms.ValidationError('抱歉,您输入的内容太短,必须超过10个字符!!!')
+        content = mistune.markdown(content)
         return content
 
     class Meta:
