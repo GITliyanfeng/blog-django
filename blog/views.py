@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from blog.models import Tag, Post, Category
 from config.models import SideBar
+from comment.forms import CommentForm, Comment
 
 
 # Create your views here.

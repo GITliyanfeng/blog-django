@@ -138,4 +138,15 @@ class-base-view的处理流程：
             + 调用paginate_queryset进行分页处理
         + 调用render_to_response数据渲染到模板
             + 调用get_template_names拿到模板
-            + 传递request,context,template_name渲染到模板  
+            + 传递request,context,template_name渲染到模板
+            
+            
+            
+完整的Blog除了上面的内容显示外,还需要具备的
+
++ search
+    + 过滤数据源 页面依然使用list页面,依然继承IndexView
++ comment  
+    + Javascript异步提交
+    + 单页面提交
+    + 当前页面提交

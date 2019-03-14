@@ -18,6 +18,7 @@ from django.contrib import admin
 
 from blog.views import PostDetailView, IndexView, CategoryView, TagView, SearchView, AuthorView
 from config.views import LinkListView
+from comment.views import CommentView
 
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
@@ -27,5 +28,6 @@ urlpatterns = [
     url(r'^post/(?P<post_id>\d+).html$', PostDetailView.as_view(), name='postDetail'),
     url(r'^admin/', admin.site.urls),
     url(r'^search/$', SearchView.as_view(), name='search'),
+    url(r'^comment/$', CommentView.as_view(), name='comment'),
     url(r'^links/$', LinkListView.as_view(), name='links'),
 ]
