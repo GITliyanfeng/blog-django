@@ -69,3 +69,45 @@ Django的目录结构应该分离为
     + 例如:sidebar部分,可以显示 最新文章 , 最热文章 , 最新评论等,他们的结构的是一致的,可以进行封装
     ,在model层定义property方法,直接根据不同的数据类型进行渲染,返回渲染后的数据,在页面中直接使用sidebar
     实例对象调用,减少在页面中,视图函数中的分支结构判断
+    
+    
+FBV CBV?
+
+- 选择视图函数  还是类视图? 无高低之分.针对不同场景的适用性,合理选择
+
+
+理解 函数 和 类?
+
+- 如果代码重复使用,同时具有共享的数据,这个时候考虑封装成一个类 --<类的继承复用>
+
+class-base-view?
+
+> View是一个接受request返回response的对象,允许结构化View以及通过继承或者Mixin的方式复用
+
+django提过的class-base-view 的使用场景和优缺点?
+
+1. View 基础View,实现HTTP的dispatch,GET请求调用get方法,POST请求调用post方法,但是自己没有实现相应的方法
+1. TemplateView 继承自View,可以解析模板,实现get方法,可以传递变量到模板中渲染
+1. DetailView 继承自View,实现get,可绑定某一个模板,用来获取单个实例的数据
+1. ListView 继承自View,实现get,绑定某个模板,批量获取数据
+
+```python
+from django.http import HttpResponse
+
+def index(request):
+    if request.method == 'GET':
+        return HttpResponse('index')
+
+```
+```python
+from django.http import HttpResponse
+from django.views import View
+
+class indexView(View):
+    def get(self,request):
+        return HttpResponse('index')
+
+```
+
+体现开-闭原则,当有新的请求方式的时候,使用View方式,不用去修改原来的业务代码<比如添加分支结构>
+而是,增加一个方法<例如增加一个post方法来处理post请求>
