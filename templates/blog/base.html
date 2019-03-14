@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}首页{% endblock %}-blog系统</title>
+</head>
+<body>
+<header>
+    <div>
+        {% for cate in navs %}
+            <a href="{% url 'postListcate' cate.id %}">{{ cate.name }}</a>
+        {% endfor %}
+    </div>
+</header>
+{% block main %}
+
+{% endblock %}
+<footer>
+    <div>
+        {% for cate in categories %}
+            <a href="{% url 'postListcate' cate.id %}">{{ cate.name }}</a>
+        {% endfor %}
+    </div>
+</footer>
+<sidebar>
+    <div>
+        {% for sidebar in sidebars %}
+            <h1>{{ sidebar.title }}</h1>
+            {{ sidebar.content_html }}
+        {% endfor %}
+    </div>
+</sidebar>
+</body>
+</html>

@@ -1,0 +1,5 @@
+<ul>
+    {% for item in post %}
+        <li><a href="{% url 'postDetail' item.id %}">{{ item.title }}</a></li>
+    {% endfor %}
+</ul>

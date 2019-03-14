@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.template.loader import render_to_string
 from django.db import models
 
 
@@ -32,11 +33,15 @@ class SideBar(models.Model):
         (STATUS_SHOW, '展示'),
         (STATUS_HIDE, '隐藏'),
     )
+    DISPLAY_HTML = 1
+    DISPLAY_LATEST = 2
+    DISPLAY_HOT = 3
+    DISPLAY_COMMENT = 4
     SIDE_TYPE = (
-        (1, 'HTML'),
-        (2, '最新文章'),
-        (3, '最热文章'),
-        (4, '最近评论'),
+        (DISPLAY_HTML, 'HTML'),
+        (DISPLAY_LATEST, '最新文章'),
+        (DISPLAY_HOT, '最热文章'),
+        (DISPLAY_COMMENT, '最近评论'),
     )
     title = models.CharField(max_length=50, verbose_name='标题')
     display_type = models.PositiveIntegerField(default=1, choices=SIDE_TYPE, verbose_name='展示类型')
@@ -44,6 +49,31 @@ class SideBar(models.Model):
     status = models.PositiveIntegerField(default=STATUS_SHOW, choices=STATUS_ITEMS, verbose_name='状态')
     owner = models.ForeignKey(User, verbose_name='作者')
     created_time = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='创建时间')
+
+    @classmethod
+    def get_all(cls):
+        return cls.objects.filter(status=cls.STATUS_SHOW)
+
+    @property
+    def content_html(self):
+        """直接渲染模板"""
+        from blog.models import Post
+        from comment.models import Comment
+
+        result = ''
+        if self.display_type == self.DISPLAY_HTML:
+            result = self.content
+        elif self.display_type == self.DISPLAY_LATEST:
+            content = {
+                'post': Post.latest_posts()
+            }
+            result = render_to_string('config/blocks/sidebar_posts.html', content)
+        elif self.display_type == self.DISPLAY_COMMENT:
+            content = {
+                'comments': Comment.objects.filter(status=Comment.STATUS_NORMAL)
+            }
+            result = render_to_string('config/blocks/sidebar_comments.html', content)
+        return result
 
     class Meta:
         db_table = 'config_sidebars'
