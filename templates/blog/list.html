@@ -1,44 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>blog系统</title>
-</head>
-<body>
-<div>
-    {% for cate in navs %}
-        <a href="{% url 'postListcate' cate.id %}">{{ cate.name }}</a>
-    {% endfor %}
-</div>
-{% if tag %}
-    标签页:{{ tag.name }}
-{% endif %}
-{% if category %}
-    分类页:{{ category.name }}
-{% endif %}
-<h1>Blog</h1>
-<ul>
-    {% for item in post %}
-        <li>
-            <a href="{% url 'postDetail' item.id %}">{{ item.title }}</a>
-            <div>
-                <span>作者:{{ item.owner.username }}</span>
-                <span>分类:{{ item.category.name }}</span>
-            </div>
-            <p>{{ item.desc }}</p>
-        </li>
-    {% endfor %}
-</ul>
-<div>
-    {% for cate in categories %}
-        <a href="{% url 'postListcate' cate.id %}">{{ cate.name }}</a>
-    {% endfor %}
-</div>
-<div>
-    {% for sidebar in sidebars %}
-        <h1>{{ sidebar.title }}</h1>
-        {{ sidebar.content_html }}
-    {% endfor %}
-</div>
-</body>
-</html>
+{% extends 'blog/base.html' %}
+{% block title %}
+    {% if tag %}
+        标签页:{{ tag.name }}
+    {% endif %}
+    {% if category %}
+        分类页:{{ category.name }}
+    {% endif %}
+{% endblock %}
+{% block main %}
+    <h1>Blog</h1>
+    <ul>
+        {% for item in post %}
+            <li>
+                <a href="{% url 'postDetail' item.id %}">{{ item.title }}</a>
+                <div>
+                    <span>作者:{{ item.owner.username }}</span>
+                    <span>分类:{{ item.category.name }}</span>
+                </div>
+                <p>{{ item.desc }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
