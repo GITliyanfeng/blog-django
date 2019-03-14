@@ -111,3 +111,31 @@ class indexView(View):
 
 体现开-闭原则,当有新的请求方式的时候,使用View方式,不用去修改原来的业务代码<比如添加分支结构>
 而是,增加一个方法<例如增加一个post方法来处理post请求>
+
+
+CBV FBV 对请求处理的差别在哪里？
+
+HTTP请求 --> Django -[转化]-> request(instance) --[middleware-process_request]--> 解析URL -->
+根据URL和View的映射 --[传递request对象]-->View(function-view or class-base-view)
+
+这就是为什么function-view 在定义的时候第一个参数是request，因为通过映射传递了过来，他对request的处理流程
+就是函数流程，函数怎么写，他就怎么处理，最后返回response对象
+
+class-base-view的处理流程：
+ 
+ classview通过对外暴露的接口as_view()方法来处理请求
+ 
+ 通过源码可以看到它其实返回的是一个闭包，这个闭包在Django解析完请求后调用，闭包内部的处理是：
+ 
+ + 给class<定义的xxxView>传递参数 request，args，kwargs
+ + 根据请求的方式调用class.post 或者 class.get 方法
+    + 首先调用dispatch 分发
+    + 调用请求方法
+        + GET 会通过get_queryset方法获取数据
+        + get_context_data 中组装哪些数据会在模板中被渲染
+            + 其中，首先调用get_paginate_by 拿到每一页的数据 <如果是获取序列数据的话>
+            + 调用get_content_object_by_name 拿到要渲染到模板的queryset的名字
+            + 调用paginate_queryset进行分页处理
+        + 调用render_to_response数据渲染到模板
+            + 调用get_template_names拿到模板
+            + 传递request,context,template_name渲染到模板  
