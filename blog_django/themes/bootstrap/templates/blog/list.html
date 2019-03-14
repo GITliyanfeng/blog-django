@@ -12,8 +12,8 @@
         <div class="card post">
             <div class="card-body">
                 <h5 class="card-title"><a href="{% url 'postDetail' item.id %}">{{ item.title }}</a></h5>
-                <span class="card-link">作者:<a href="#">{{ item.owner.username }}</a></span>
-                <span class="card-link">分类:<a href="#">{{ item.category.name }}</a></span>
+                <span class="card-link">作者:<a href="{% url 'postListauthor' item.owner.id %}">{{ item.owner.username }}</a></span>
+                <span class="card-link">分类:<a href="{% url 'postListcate' item.category.id %}">{{ item.category.name }}</a></span>
                 <span class="card-link">标签:
                     {% for tag in item.tag.all %}
                         <a href="{% url 'postListtag' tag.id %}">{{ tag.name }}</a>
