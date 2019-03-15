@@ -35,6 +35,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'xadmin',
+    'crispy_forms',
     'blog.apps.BlogConfig',
     'config.apps.ConfigConfig',
     'comment.apps.CommentConfig',

@@ -23,6 +23,9 @@ class Comment(models.Model):
     def get_by_target(cls, target):
         return cls.objects.filter(target=target, status=cls.STATUS_NORMAL)
 
+    def __str__(self):
+        return f'{self.nickname}的评论'
+
     class Meta:
         db_table = 'comment_comments'
         verbose_name = '评论'

@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from django.contrib import admin
+import xadmin
 from django.contrib.sitemaps import views as sitemap_views
 
 from blog.views import PostDetailView, IndexView, CategoryView, TagView, SearchView, AuthorView
@@ -29,7 +29,7 @@ urlpatterns = [
     url(r'^tag/(?P<tag_id>\d+)/$', TagView.as_view(), name='postListtag'),
     url(r'^author/(?P<author_id>\d+)/$', AuthorView.as_view(), name='postListauthor'),
     url(r'^post/(?P<post_id>\d+).html$', PostDetailView.as_view(), name='postDetail'),
-    url(r'^admin/', admin.site.urls),
+    url(r'^xadmin/', xadmin.site.urls),
     url(r'^search/$', SearchView.as_view(), name='search'),
     url(r'^comment/$', CommentView.as_view(), name='comment'),
     url(r'^links/$', LinkListView.as_view(), name='links'),

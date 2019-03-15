@@ -17,3 +17,5 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+XADMIN_TITLE = 'Lee-Blog后台系统'
+XADMIN_FOOTER_TITLE = 'power by lee'
