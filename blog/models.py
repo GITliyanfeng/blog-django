@@ -96,6 +96,7 @@ class Post(models.Model):
     tag = models.ManyToManyField(Tag, verbose_name='标签')
     owner = models.ForeignKey(User, verbose_name='作者')
     body = models.TextField(verbose_name='正文 HTML格式', blank=True, editable=False)
+    is_markdown = models.BooleanField(default=False, verbose_name='MarkDown语法')
     created_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间', db_index=True)
 
     def __str__(self):
@@ -135,8 +136,11 @@ class Post(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        """重写save方法,需要将markdown格式代码转换成分Html"""
-        self.body = mistune.markdown(self.content)
+        # 根据是否使用markdown语法来确定如何转换数据
+        if self.is_markdown:
+            self.body = mistune.markdown(self.content)
+        else:
+            self.body = self.content
         super(Post, self).save(force_insert=False, force_update=False, using=None,
                                update_fields=None)
 

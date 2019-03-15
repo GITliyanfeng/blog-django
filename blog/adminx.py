@@ -1,4 +1,5 @@
 import xadmin
+from xadmin import views
 from xadmin.filters import manager
 from xadmin.filters import RelatedFieldListFilter
 from django.utils.html import format_html
@@ -85,10 +86,13 @@ class PostAdmin(BaseOwnerAdmin):
                  Row('title', 'category'),
                  'status',
                  'tag',
+                 'is_markdown',
                  ),
         Fieldset('内容',
                  'desc',
-                 'content'
+                 'content_ck',
+                 'content_md',
+                 'content',
                  ),
     )
 
@@ -107,3 +111,20 @@ class PostAdmin(BaseOwnerAdmin):
         media.add_js([])
         media.add_css({'all': []})
         return media
+
+
+# 后台系统名称页脚设置、设置后台菜单为收缩样式
+class GlobalSetting(object):
+    site_title = 'LeeBlog后台管理'
+    site_footer = 'LeeBlog.com'
+    # menu_style = 'accordion'
+
+
+# 配置后台主题
+class BaseSetting(object):
+    enable_themes = True
+    use_bootswatch = False
+
+
+xadmin.site.register(views.CommAdminView, GlobalSetting)
+xadmin.site.register(views.BaseAdminView, BaseSetting)
