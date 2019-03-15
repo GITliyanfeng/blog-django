@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.contrib.sitemaps import views as sitemap_views
 
 from blog.views import PostDetailView, IndexView, CategoryView, TagView, SearchView, AuthorView
+from blog.rss import LatestPostFeed
+from blog.sitemap import PostSiteMap
 from config.views import LinkListView
 from comment.views import CommentView
 
@@ -30,4 +33,6 @@ urlpatterns = [
     url(r'^search/$', SearchView.as_view(), name='search'),
     url(r'^comment/$', CommentView.as_view(), name='comment'),
     url(r'^links/$', LinkListView.as_view(), name='links'),
+    url(r'^rss|feed/$', LatestPostFeed(), name='rss'),
+    url(r'^sitemap.xml$', sitemap_views.sitemap, {'sitemaps': {'posts': PostSiteMap}}),
 ]
