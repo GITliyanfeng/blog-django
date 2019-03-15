@@ -42,6 +42,7 @@ class TagAdmin(BaseOwnerAdmin):
     fields = ('name', 'status')
 
 
+@manager.register
 class CategoryOwnerFilter(RelatedFieldListFilter):
     """自定义过滤器"""
 
@@ -50,12 +51,9 @@ class CategoryOwnerFilter(RelatedFieldListFilter):
         return field.name == 'category'
 
     def __init__(self, field, request, params, model, admin_view, field_path):
-        super(CategoryOwnerFilter, self).__init__(field, request, params, model, admin_view, field_path)
+        super().__init__(field, request, params, model, admin_view, field_path)
         # 重新获取lookup_choices 根据 owner过滤,个人只能获取自己的数据
         self.lookup_choices = Category.objects.filter(owner=request.user).values_list('id', 'name')
-
-
-manager.register(CategoryOwnerFilter, take_priority=True)
 
 
 @xadmin.sites.register(Post)
@@ -65,24 +63,9 @@ class PostAdmin(BaseOwnerAdmin):
         'title', 'category', 'status',
         'created_time', 'owner', 'operator'
     ]
-    list_filter = ['category']
+    list_filter = ('category',)
     search_fields = ['title', 'category__name']
     actions_on_top = True
-    # actions_on_bottom = True
-
-    # 编辑页面
-    # save_on_top = True # 保存 编辑按钮是否在顶部显式
-    # fields配置编辑页面字段的显式顺序
-    # fields = (
-    #     ('category', 'title'),
-    #     'desc',
-    #     'status',
-    #     'content',
-    #     'tag'
-    # )
-    # fieldsets配置编辑页面的布局
-    # filter_horizontal = ('tag',)  # 多对多字段展示效果一 左侧栏目选中 --> 右侧
-    filter_vertical = ('tag',)  # 多对多字段效果二  上侧栏目选中 --> 下侧
     """
     要求格式
     fieldsets = (

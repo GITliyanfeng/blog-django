@@ -22,6 +22,7 @@ from blog.rss import LatestPostFeed
 from blog.sitemap import PostSiteMap
 from config.views import LinkListView
 from comment.views import CommentView
+from blog_django.autocomplete import TagAutoComplete, CategoryAutoComplete
 
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
@@ -35,4 +36,6 @@ urlpatterns = [
     url(r'^links/$', LinkListView.as_view(), name='links'),
     url(r'^rss|feed/$', LatestPostFeed(), name='rss'),
     url(r'^sitemap.xml$', sitemap_views.sitemap, {'sitemaps': {'posts': PostSiteMap}}),
+    url(r'^category-autocomplete/$', CategoryAutoComplete.as_view(), name='categoryAutocompete'),
+    url(r'^tag-autocomplete/$', TagAutoComplete.as_view(), name='tagAutocomplele'),
 ]
