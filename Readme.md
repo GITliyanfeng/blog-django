@@ -150,3 +150,60 @@ class-base-view的处理流程：
     + Javascript异步提交
     + 单页面提交
     + 当前页面提交
+    
+    
+ + markdown 格式支持
+ 
+ 
+ + 访问统计
+ 
+ 访问统计方式通常有?
+ 
+ 1. 基于当此访问后端实时处理
+ 1. 基于当此访问后端延时处理--Celery(分布式任务队列)
+ 1. 前端通过JavaScript埋点,或者img标签来统计
+ 1. 基于Nginx的日志分析来统计
+ 
+ 方式一其实是在获取文章详情的时候 对当前文章的访问量PV UV进行+1的操作
+ 
+ ```python
+from django.db.models import Q, F
+from blog.views import CommonViewMixin,DetailView
+
+class PostDetailView(CommonViewMixin, DetailView):
+    # 省略其他代码
+    def get(self,request,*args,**kwargs):
+    response = super(PostDetailView, self).(request,*args,**kwargs)
+    Post.objects.filter(pk=self.object.id).update(pv=F('pv')+1,uv=F('uv')+1)
+```
+存在的缺点是,每一个访问都会引起数据库的写的操作,性能差
+
+所以引入了异步化的思想<让一个第三方的工具去执行这项任务>Celery
+
+第三种和第四种是常用的方式,应因为访问量巨大,不可能在业务代码中实现.需要一个独立出来的系统去做统计,麻烦在统计数据和业务分离.
+业务需要数据作展示,统计i同需要拿业务系统的数据做分析
+
+无论哪种统计都需要解决恶意刷新的问题,如何区分用户?
++ 用户IP和浏览器类型生成的MD5
++ 系统生成的唯一id放到cookies中
++ 用户登陆?
+
+方式一  用户重合 ,同浏览器,同一个出口IP
+方式二  换浏览器?
+方式三  没人会登陆之后才能看文章,实施难度大
+
+选择方式二,用户访问的时候记录用户的访问数据,这些数据应该被放在缓存中,临时数据,有过期时间
+
+需要考虑:
++ id如何生成
+    + 使用uuid库
++ 那一步给有用户配置id
+    + 使用middleware来标记
++ 用什么样子的缓存
+    + django缓存接口
+    
+    
+
+合理的系统是  分离统计 避免用户在访问的时候执行数据库的写的操作   
+    
+ 

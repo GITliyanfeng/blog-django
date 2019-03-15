@@ -73,6 +73,11 @@ class SideBar(models.Model):
                 'comments': Comment.objects.filter(status=Comment.STATUS_NORMAL)
             }
             result = render_to_string('config/blocks/sidebar_comments.html', content)
+        elif self.display_type == self.DISPLAY_HOT:
+            content = {
+                'hot_list': Post.hot_posts()
+            }
+            result = render_to_string('config/blocks/sidebar_hot.html', content)
         return result
 
     class Meta:
