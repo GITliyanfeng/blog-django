@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+import mistune
 
 
 # Create your models here.
@@ -85,7 +86,7 @@ class Post(models.Model):
     uv = models.PositiveIntegerField(default=1)
     title = models.CharField(max_length=255, verbose_name='标题')
     desc = models.CharField(max_length=1024, blank=True, verbose_name='摘要')
-    content = models.TextField(verbose_name='正文', help_text="正文必须为MarkDown格式")
+    content = models.TextField(verbose_name='正文MarkDown格式', help_text="正文必须为MarkDown格式")
     status = models.PositiveIntegerField(default=STATUS_NORMAL, choices=STATUS_ITEMS, verbose_name='状态',
                                          db_column='pstatus')
     # 多对一  多个文章对应一个category
@@ -93,6 +94,7 @@ class Post(models.Model):
     # 多对多关系 一个文章多个标签,多个标签可以对应一个文章
     tag = models.ManyToManyField(Tag, verbose_name='标签')
     owner = models.ForeignKey(User, verbose_name='作者')
+    body = models.TextField(verbose_name='正文 HTML格式', blank=True, editable=False)
     created_time = models.DateTimeField(auto_now_add=True, verbose_name='创建时间', db_index=True)
 
     def __str__(self):
@@ -129,6 +131,13 @@ class Post(models.Model):
     def hot_posts(cls):
         """获取高点击连量的文章"""
         return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        """重写save方法,需要将markdown格式代码转换成分Html"""
+        self.body = mistune.markdown(self.content)
+        super(Post, self).save(force_insert=False, force_update=False, using=None,
+                               update_fields=None)
 
     class Meta:
         db_table = 'blog_posts'
