@@ -6,8 +6,11 @@
     <title>{% block title %}Django企业开发实战{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'highlight/highlight.css' %}">
+    <script src="{% static 'highlight/highlight.js' %}"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     {% block extra_head %}
-    
+
     {% endblock %}
     <style>
         .post {
@@ -34,7 +37,8 @@
 
             </ul>
             <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'search' %}">
-                <input  class="form-control mr-sm-2" name="keyword" type="search" placeholder="Search" aria-label="Search" value="{{ keyword }}">
+                <input class="form-control mr-sm-2" name="keyword" type="search" placeholder="Search"
+                       aria-label="Search" value="{{ keyword }}">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
         </div>

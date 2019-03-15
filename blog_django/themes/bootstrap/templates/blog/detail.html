@@ -1,10 +1,7 @@
 {% extends 'blog/base.html' %}
 {% load comment_block %}
+{% load static %}
 {% block extra_head %}
-    <link rel="stylesheet"
-          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/default.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
 {% endblock %}
 {% block title %}{{ post.title }}{% endblock %}
 {% block main %}
