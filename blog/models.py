@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.utils.functional import cached_property
 from django.db import models
 import mistune
 
@@ -138,6 +139,10 @@ class Post(models.Model):
         self.body = mistune.markdown(self.content)
         super(Post, self).save(force_insert=False, force_update=False, using=None,
                                update_fields=None)
+
+    @cached_property
+    def tags(self):
+        return ','.join(self.tag.values_list('name', flat=True))
 
     class Meta:
         db_table = 'blog_posts'
