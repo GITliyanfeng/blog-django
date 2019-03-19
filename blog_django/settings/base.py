@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'haystack',
     'ckeditor',
     'ckeditor_uploader',
     'dal',
@@ -140,4 +141,4 @@ CKEDITOR_CONFIGS = {
         'extraPlugins': 'codesnippet',  # 配置插件
     }
 }
-DEFAULT_FILE_STORAGE = 'blog_djang.utils.storage.WatermarkStorage'
+DEFAULT_FILE_STORAGE = 'blog_django.utils.storage.WatermarkStorage'

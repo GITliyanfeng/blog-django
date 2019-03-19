@@ -18,7 +18,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps import views as sitemap_views
 
-from blog.views import PostDetailView, IndexView, CategoryView, TagView, SearchView, AuthorView
+from blog.views import PostDetailView, IndexView, CategoryView, TagView, SearchView, AuthorView,ElasSearchView
 from blog.rss import LatestPostFeed
 from blog.sitemap import PostSiteMap
 from config.views import LinkListView
@@ -34,7 +34,7 @@ urlpatterns = [
                   url(r'^author/(?P<author_id>\d+)/$', AuthorView.as_view(), name='postListauthor'),
                   url(r'^post/(?P<post_id>\d+).html$', PostDetailView.as_view(), name='postDetail'),
                   url(r'^xadmin/', xadmin.site.urls),
-                  url(r'^search/$', SearchView.as_view(), name='search'),
+                  url(r'^searchs/$', SearchView.as_view(), name='search'),
                   url(r'^comment/$', CommentView.as_view(), name='comment'),
                   url(r'^links/$', LinkListView.as_view(), name='links'),
                   url(r'^rss|feed/$', LatestPostFeed(), name='rss'),
@@ -42,4 +42,5 @@ urlpatterns = [
                   url(r'^category-autocomplete/$', CategoryAutoComplete.as_view(), name='categoryAutocompete'),
                   url(r'^tag-autocomplete/$', TagAutoComplete.as_view(), name='tagAutocomplele'),
                   url(r'^ckeditor/', include('ckeditor_uploader.urls')),
+                  url(r'^search/', ElasSearchView(),name='esw'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

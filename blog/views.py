@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from blog.models import Tag, Post, Category
 from config.models import SideBar
 from django.core.cache import cache
+from haystack.views import SearchView as HaySearchView
 
 from datetime import date
 
@@ -91,11 +92,11 @@ class PostDetailView(CommonViewMixin, DetailView):
             cache.set(uv_key, 1, 24 * 60 * 60)
 
         if increase_pv and increase_uv:
-            Post.objects.filter(pk=self.object.id).update(pv=F('pv') + 1, uv=F('uv')+1)
+            Post.objects.filter(pk=self.object.id).update(pv=F('pv') + 1, uv=F('uv') + 1)
         elif increase_pv:
             Post.objects.filter(pk=self.object.id).update(pv=F('pv') + 1)
         elif increase_uv:
-            Post.objects.filter(pk=self.object.id).update(uv=F('uv')+1)
+            Post.objects.filter(pk=self.object.id).update(uv=F('uv') + 1)
 
 
 class SearchView(IndexView):
@@ -120,3 +121,15 @@ class AuthorView(IndexView):
         queryset = super(AuthorView, self).get_queryset()
         author_id = self.kwargs.get('author_id')
         return queryset.filter(owner_id=author_id)
+
+
+class ElasSearchView(HaySearchView):
+
+    def get_context(self):
+        ctx = super(ElasSearchView, self).get_context()
+        tmp = {
+            'sidebars': SideBar.get_all()
+        }
+        ctx.update(tmp)
+        ctx.update(Category.get_navs())
+        return ctx

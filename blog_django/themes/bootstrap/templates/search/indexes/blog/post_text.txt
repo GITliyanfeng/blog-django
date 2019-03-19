@@ -1,0 +1,5 @@
+{{object.title}}
+{{object.owner.username}}
+{{object.desc}}
+{{object.body}}
+
