@@ -1,0 +1,45 @@
+{% extends 'blog/base.html' %}
+{% load highlight %}
+{% block title %}
+    针对{% if query %}
+    {{ query }}
+{% endif %}的搜索结果
+{% endblock %}
+{% block main %}
+    {% if query %}
+        {% for item in page.object_list %}
+            <div class="card post">
+                <div class="card-body">
+                    <h5 class="card-title"><a
+                            href="{% url 'postDetail' item.object.id %}">{% highlight item.object.title with query %}</a>
+                    </h5>
+                    <span class="card-link">作者:<a
+                            href="{% url 'postListauthor' item.object.owner.id %}">{% highlight item.object.owner.username with query %}</a></span>
+                    <span class="card-link">分类:<a
+                            href="{% url 'postListcate' item.object.category.id %}">{{ item.object.category.name }}</a></span>
+                    <span class="card-link">标签:
+                        {% for tag in item.object.tag.all %}
+                            <a href="{% url 'postListtag' tag.id %}">{{ tag.name }}</a>
+                        {% endfor %}
+                    </span>
+                    <p class="card-text">{% highlight item.object.desc with query %}
+                        <a href="{% url 'postDetail' item.object.id %}">查看详情</a></p>
+                </div>
+            </div>
+        {% empty %}
+            <div class="no-post">没有搜索到你想要的结果！</div>
+        {% endfor %}
+        {% if page.has_previous or page.has_next %}
+            <div>
+                {% if page.has_previous %}
+                    <a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; 上一页
+                {% if page.has_previous %}</a>{% endif %}
+                |
+                {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}下一页
+                &raquo;{% if page.has_next %}</a>{% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        请输入搜索关键词，例如 django
+    {% endif %}
+{% endblock %}

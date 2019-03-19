@@ -16,6 +16,10 @@
         .post {
             margin-bottom: 5px;
         }
+
+        span.highlighted {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -36,9 +40,9 @@
                 {% endfor %}
 
             </ul>
-            <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'search' %}">
-                <input class="form-control mr-sm-2" name="keyword" type="search" placeholder="Search"
-                       aria-label="Search" value="{{ keyword }}">
+            <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'esw' %}">
+                <input class="form-control mr-sm-2" name="q" type="search" placeholder="Search"
+                       aria-label="Search" required value="{{ query }}">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
         </div>
