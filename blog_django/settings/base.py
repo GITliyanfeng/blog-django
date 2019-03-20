@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_celery_results',
     'haystack',
     'ckeditor',
     'ckeditor_uploader',

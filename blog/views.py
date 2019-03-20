@@ -1,12 +1,11 @@
 from django.views.generic import DetailView, ListView
-from django.db.models import Q, F
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from blog.models import Tag, Post, Category
 from config.models import SideBar
-from django.core.cache import cache
 from haystack.views import SearchView as HaySearchView
 
-from datetime import date
+from blog.tasks import handle_visited
 
 
 # Create your views here.
@@ -75,28 +74,11 @@ class PostDetailView(CommonViewMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         response = super(PostDetailView, self).get(request, *args, **kwargs)
-        self.handle_visited()
-        return response
-
-    def handle_visited(self):
-        increase_pv = False
-        increase_uv = False
+        path = self.request.path
         uid = self.request.uid
-        pv_key = f'pv:{uid}:{self.request.path}'
-        uv_key = f'uv:{uid}:{str(date.today())}:{self.request.path}'
-        if not cache.get(pv_key):
-            increase_pv = True
-            cache.set(pv_key, 1, 1 * 60)
-        if not cache.get(uv_key):
-            increase_uv = True
-            cache.set(uv_key, 1, 24 * 60 * 60)
-
-        if increase_pv and increase_uv:
-            Post.objects.filter(pk=self.object.id).update(pv=F('pv') + 1, uv=F('uv') + 1)
-        elif increase_pv:
-            Post.objects.filter(pk=self.object.id).update(pv=F('pv') + 1)
-        elif increase_uv:
-            Post.objects.filter(pk=self.object.id).update(uv=F('uv') + 1)
+        id = self.object.id
+        handle_visited.delay(path, uid, id)
+        return response
 
 
 class SearchView(IndexView):
